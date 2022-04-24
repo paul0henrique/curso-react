@@ -1,16 +1,25 @@
 import React from "react";
 
+import ProductService from '../../app/productServices'
+
 const estadoInicial = {
     nome: '',
     sku: '',
     descricao: '',
     preco: 0,
-    fornecedor: ''
+    fornecedor: '',
+    sucesso: false,
+    errors: []
 }
 
 class CadastroProduto extends React.Component {
 
     state = estadoInicial;
+
+    constructor(){
+        super()
+        this.service = new ProductService();
+    }
 
     onChange = (event) => {
         const valor = event.target.value
@@ -19,11 +28,26 @@ class CadastroProduto extends React.Component {
     }
 
     onSubmit = (event) => {
-        console.log(this.state)
+        const produto = {
+            nome: this.state.nome,
+            sku: this.state.sku,
+            descricao: this.state.preco,
+            preco: this.state.preco,
+            fornecedor: this.state.fornecedor
+        }
+        try{
+            this.service.salvar(produto)
+            this.limpaCampos()
+            this.setState({ sucesso: true })
+
+        }catch(error){
+            const errors = error.errors
+            this.setState({errors : errors })
+        }
     }
 
     limpaCampos = () => {
-        this.setState(estadoInicial)
+        this.setState(estadoInicial) 
     }
     
     render(){
@@ -34,6 +58,28 @@ class CadastroProduto extends React.Component {
                 </div>
 
                 <div className='card-body'>
+
+                    { this.state.sucesso &&
+                        
+                        <div class="alert alert-dismissible alert-success">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <strong>Sucesso!</strong> Cadastro realizado<a href="#"></a>.
+                        </div>        
+                    }
+
+                    { this.state.errors.length > 0 &&
+
+                        this.state.errors.map( msg => {
+                            return (
+                                <div class="alert alert-dismissible alert-danger">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    <strong>Erro!</strong> {msg}
+                                </div>        
+                            )
+                        })
+                    }
+
+
 
                     <div className="row">
                         <div className="col-md-6">
@@ -70,6 +116,7 @@ class CadastroProduto extends React.Component {
                                  </div>
                             </div>
                     </div>
+
                     <div className="row">
                         <div className="col-md-6">
                             <div className="form-group">
@@ -93,14 +140,15 @@ class CadastroProduto extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-md-1">
-                            <button onClick={this.onSubmit} className="btn btn-success">Salvar</button>
-                        </div>
 
-                        <div className="col-md-1">
-                            <button onClick={this.limpaCampos} className="btn btn-primary">Limpar</button>
-                        </div>
+                        <div className="row">
+                            <div className="col-md-1">
+                                <button onClick={this.onSubmit} className="btn btn-success">Salvar</button>
+                            </div>
+
+                            <div className="col-md-1">
+                                <button onClick={this.limpaCampos} className="btn btn-primary">Limpar</button>
+                            </div>
                     </div>
                 </div>
             </div>
