@@ -1,17 +1,20 @@
 import React from 'react'
 
-import {HashRouter, Routes, Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 
 import Home from './views/home'
 import CadastroProduto from './views/produtos/cadastro'
+import ConsultaProdutos from './views/produtos/consulta'
 
 export default () => {
     return (
-        <HashRouter>
-            <Routes>
-                <Route exact path="/" element={<Home/>}/>
-                <Route exact path="/cadastro-produtos" element={<CadastroProduto/>}/>
-            </Routes>
-        </HashRouter>
+        <Switch>
+            <Route exact path="/cadastro-produtos/:sku?" component={CadastroProduto} />
+            <Route exact path="/consulta-produtos" component={ConsultaProdutos} />
+            <Route exact path="/" component={Home} />
+        </Switch>
     )
 }
+
+
+
